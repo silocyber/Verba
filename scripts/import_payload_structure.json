@@ -1,0 +1,877 @@
+{
+  "config": {
+    "RAG": {
+      "Reader": {
+        "components": {
+          "BasicReader": {
+            "name": "BasicReader",
+            "variables": [],
+            "library": [
+              "pypdf"
+            ],
+            "description": "Imports plain text, pdf, markdown, and json files.",
+            "type": "UPLOAD",
+            "config": {
+              "document_type": {
+                "type": "text",
+                "text": "Document",
+                "description": "Choose a label for your documents for filtering"
+              }
+            },
+            "available": true
+          },
+          "GitHubReader": {
+            "name": "GitHubReader",
+            "variables": [
+              "GITHUB_TOKEN"
+            ],
+            "library": [],
+            "description": "Retrieves all text files (.txt, .md, .mdx, .json) from a GitHub Repository and imports them into Verba. Use this format {owner}/{repo}/{branch}/{folder}",
+            "type": "URL",
+            "config": {
+              "document_type": {
+                "type": "text",
+                "text": "Document",
+                "description": "Choose a label for your documents for filtering"
+              }
+            },
+            "available": false
+          },
+          "UnstructuredAPI": {
+            "name": "UnstructuredAPI",
+            "variables": [
+              "UNSTRUCTURED_API_KEY"
+            ],
+            "library": [],
+            "description": "Uses the Unstructured API to import multiple file types such as plain text and documents (.pdf, .csv). Requires an Unstructured API Key",
+            "type": "UPLOAD",
+            "config": {
+              "document_type": {
+                "type": "text",
+                "text": "Document",
+                "description": "Choose a label for your documents for filtering"
+              }
+            },
+            "available": false
+          }
+        },
+        "selected": "BasicReader"
+      },
+      "Chunker": {
+        "components": {
+          "TokenChunker": {
+            "name": "TokenChunker",
+            "variables": [],
+            "library": [
+              "tiktoken"
+            ],
+            "description": "Chunks documents by word tokens. Choose between the chunk size and their overlap.",
+            "type": "",
+            "config": {
+              "units": {
+                "type": "number",
+                "value": 100,
+                "description": "Choose the units per chunks"
+              },
+              "overlap": {
+                "type": "number",
+                "value": 50,
+                "description": "Choose the units for overlap between chunks"
+              }
+            },
+            "available": true
+          }
+        },
+        "selected": "TokenChunker"
+      },
+      "Embedder": {
+        "components": {
+          "GoogleEmbedder": {
+            "name": "GoogleEmbedder",
+            "variables": [
+              "GOOGLE_API_KEY"
+            ],
+            "library": [],
+            "description": "Embeds and retrieves objects using Google's text-embedding-preview-0409 model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "MiniLMEmbedder": {
+            "name": "MiniLMEmbedder",
+            "variables": [],
+            "library": [
+              "torch",
+              "transformers",
+              "accelerate"
+            ],
+            "description": "Embeds and retrieves objects using SentenceTransformer's all-MiniLM-L6-v2 model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "ADAEmbedder": {
+            "name": "ADAEmbedder",
+            "variables": [
+              "OPENAI_API_KEY"
+            ],
+            "library": [],
+            "description": "Embeds and retrieves objects using OpenAI's ADA model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "CohereEmbedder": {
+            "name": "CohereEmbedder",
+            "variables": [
+              "COHERE_API_KEY"
+            ],
+            "library": [],
+            "description": "Embeds and retrieves objects using Cohere's embed-multilingual-v2.0 model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "OllamaEmbedder": {
+            "name": "OllamaEmbedder",
+            "variables": [
+              "OLLAMA_URL",
+              "OLLAMA_MODEL"
+            ],
+            "library": [],
+            "description": "Embeds and retrieves objects using Ollama and the model specified in the environment variable 'OLLAMA_MODEL'",
+            "type": "",
+            "config": {},
+            "available": false
+          }
+        },
+        "selected": "OllamaEmbedder"
+      },
+      "Retriever": {
+        "components": {
+          "WindowRetriever": {
+            "name": "WindowRetriever",
+            "variables": [],
+            "library": [],
+            "description": "Retrieve relevant chunks and their surrounding context using Semantic and Keyword Search (Hybrid)",
+            "type": "",
+            "config": {},
+            "available": true
+          }
+        },
+        "selected": "WindowRetriever"
+      },
+      "Generator": {
+        "components": {
+          "Gemini": {
+            "name": "Gemini",
+            "variables": [
+              "GOOGLE_APPLICATION_CREDENTIALS",
+              "GOOGLE_CLOUD_PROJECT"
+            ],
+            "library": [
+              "vertexai"
+            ],
+            "description": "Generator using Google's Gemini 1.5 Pro model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "GPT4-O": {
+            "name": "GPT4-O",
+            "variables": [
+              "OPENAI_API_KEY"
+            ],
+            "library": [
+              "openai"
+            ],
+            "description": "Generator using the new OpenAI's gpt4-o model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "GPT3": {
+            "name": "GPT3",
+            "variables": [
+              "OPENAI_API_KEY"
+            ],
+            "library": [
+              "openai"
+            ],
+            "description": "Generator using OpenAI's gpt-3.5-turbo-0125 model",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "Ollama": {
+            "name": "Ollama",
+            "variables": [
+              "OLLAMA_URL",
+              "OLLAMA_MODEL"
+            ],
+            "library": [],
+            "description": "Generator using a local running Ollama Model specified in the ` OLLAMA_MODEL` variable",
+            "type": "",
+            "config": {},
+            "available": false
+          },
+          "Command R+": {
+            "name": "CommandR+",
+            "variables": [
+              "COHERE_API_KEY"
+            ],
+            "library": [],
+            "description": "Generator using Cohere's command-r-plus model",
+            "type": "",
+            "config": {},
+            "available": false
+          }
+        },
+        "selected": "Ollama"
+      }
+    },
+    "SETTING": {
+      "selectedTheme": "Default",
+      "themes": {
+        "Default": {
+          "Customization": {
+            "title": "Customization",
+            "description": "Customize the layout of your Verba by changing the title, subtitle, logo, and colors of the app.",
+            "settings": {
+              "title": {
+                "text": "Verba",
+                "type": "text",
+                "description": "Title of the Page"
+              },
+              "subtitle": {
+                "text": "The Golden RAGtriever",
+                "type": "text",
+                "description": "Subtitle of the Page"
+              },
+              "intro_message": {
+                "text": "Welcome to Verba, your open-source RAG application!",
+                "type": "text",
+                "description": "Intro Message"
+              },
+              "placeholder_message": {
+                "text": "Ask Verba anything!",
+                "type": "text",
+                "description": "Input Placeholder"
+              },
+              "image": {
+                "src": "https://github.com/weaviate/Verba/blob/main/img/verba_icon.png?raw=true",
+                "type": "image",
+                "description": "Logo of the Page"
+              },
+              "primary_color": {
+                "color": "#FDFF91",
+                "type": "color",
+                "description": "Primary Color"
+              },
+              "secondary_color": {
+                "color": "#90FFA8",
+                "type": "color",
+                "description": "Secondary Color"
+              },
+              "warning_color": {
+                "color": "#FF8399",
+                "type": "color",
+                "description": "Accent Color"
+              },
+              "bg_color": {
+                "color": "#FEF7F7",
+                "type": "color",
+                "description": "Background Color"
+              },
+              "bg_alt_color": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Alternative Background Color"
+              },
+              "text_color": {
+                "color": "#161616",
+                "type": "color",
+                "description": "Text Color"
+              },
+              "text_alt_color": {
+                "color": "#8E8E8E",
+                "type": "color",
+                "description": "Alternative Text Color"
+              },
+              "button_color": {
+                "color": "#EFEFEF",
+                "type": "color",
+                "description": "Button Color"
+              },
+              "button_hover_color": {
+                "color": "#DCDCDC",
+                "type": "color",
+                "description": "Button Hover Color"
+              },
+              "bg_console": {
+                "color": "#3F3E40",
+                "type": "color",
+                "description": "Console Background"
+              },
+              "text_console": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Console Text"
+              },
+              "font": {
+                "value": "Plus_Jakarta_Sans",
+                "type": "select",
+                "options": [
+                  "Inter",
+                  "Plus_Jakarta_Sans",
+                  "Open_Sans",
+                  "PT_Mono"
+                ],
+                "description": "Text Font"
+              },
+              "theme": "light"
+            }
+          },
+          "Chat": {
+            "title": "Chat Settings",
+            "description": "Customize chat settings like caching generated answers in Weaviate or let Weaviate give you autocomplete suggestions.",
+            "settings": {
+              "caching": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Caching"
+              },
+              "suggestion": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Autocompletion"
+              },
+              "info_button": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Help Information"
+              },
+              "max_document_size": {
+                "value": 10000,
+                "type": "number",
+                "description": "Max characters to show Documents"
+              }
+            }
+          }
+        },
+        "DarkMode": {
+          "Customization": {
+            "title": "Customization",
+            "description": "Customize the layout of your Verba by changing the title, subtitle, logo, and colors of the app.",
+            "settings": {
+              "title": {
+                "text": "Verba",
+                "type": "text",
+                "description": "Title of the Page"
+              },
+              "subtitle": {
+                "text": "The Dark RAGtriever",
+                "type": "text",
+                "description": "Subtitle of the Page"
+              },
+              "intro_message": {
+                "text": "Welcome to the dark mode version of Verba! Spooky, right?",
+                "type": "text",
+                "description": "Intro Message"
+              },
+              "placeholder_message": {
+                "text": "Ask anything!",
+                "type": "text",
+                "description": "Input Placeholder"
+              },
+              "image": {
+                "src": "https://github.com/weaviate/Verba/blob/main/img/verba_icon.png?raw=true",
+                "type": "image",
+                "description": "Logo of the Page"
+              },
+              "primary_color": {
+                "color": "#BB86FC",
+                "type": "color",
+                "description": "Primary Color"
+              },
+              "secondary_color": {
+                "color": "#008F82",
+                "type": "color",
+                "description": "Secondary Color"
+              },
+              "warning_color": {
+                "color": "#FF8399",
+                "type": "color",
+                "description": "Accent Color"
+              },
+              "bg_color": {
+                "color": "#202020",
+                "type": "color",
+                "description": "Background Color"
+              },
+              "bg_alt_color": {
+                "color": "#2F2929",
+                "type": "color",
+                "description": "Alternative Background Color"
+              },
+              "text_color": {
+                "color": "#ffffff",
+                "type": "color",
+                "description": "Text Color"
+              },
+              "text_alt_color": {
+                "color": "#999999",
+                "type": "color",
+                "description": "Alternative Text Color"
+              },
+              "button_color": {
+                "color": "#3C3C3C",
+                "type": "color",
+                "description": "Button Color"
+              },
+              "button_hover_color": {
+                "color": "#2C2C2C",
+                "type": "color",
+                "description": "Button Hover Color"
+              },
+              "bg_console": {
+                "color": "#2F2929",
+                "type": "color",
+                "description": "Console Background"
+              },
+              "text_console": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Console Text"
+              },
+              "font": {
+                "value": "Open_Sans",
+                "type": "select",
+                "options": [
+                  "Inter",
+                  "Plus_Jakarta_Sans",
+                  "Open_Sans",
+                  "PT_Mono"
+                ],
+                "description": "Text Font"
+              },
+              "theme": "dark"
+            }
+          },
+          "Chat": {
+            "title": "Chat Settings",
+            "description": "Customize chat settings like caching generated answers in Weaviate or let Weaviate give you autocomplete suggestions.",
+            "settings": {
+              "caching": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Caching"
+              },
+              "suggestion": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Autocompletion"
+              },
+              "info_button": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Help Information"
+              },
+              "max_document_size": {
+                "value": 10000,
+                "type": "number",
+                "description": "Max characters to show Documents"
+              }
+            }
+          }
+        },
+        "Weaviate": {
+          "Customization": {
+            "title": "Customization",
+            "description": "Customize the layout of your Verba by changing the title, subtitle, logo, and colors of the app.",
+            "settings": {
+              "title": {
+                "text": "Weaviate Verba",
+                "type": "text",
+                "description": "Title of the Page"
+              },
+              "subtitle": {
+                "text": "Chatbot for Weaviate",
+                "type": "text",
+                "description": "Subtitle of the Page"
+              },
+              "intro_message": {
+                "text": "Welcome to Weaviate, your AI-Native vector database. How can I help you with Weaviate today?",
+                "type": "text",
+                "description": "Intro Message"
+              },
+              "placeholder_message": {
+                "text": "Ask all questions related to Weaviate",
+                "type": "text",
+                "description": "Input Placeholder"
+              },
+              "image": {
+                "src": "https://github.com/weaviate/Verba/blob/1.0.0/frontend/public/weaviate.png?raw=true",
+                "type": "image",
+                "description": "Logo of the Page"
+              },
+              "primary_color": {
+                "color": "#6BDF4A",
+                "type": "color",
+                "description": "Primary Color"
+              },
+              "secondary_color": {
+                "color": "#7AD6EB",
+                "type": "color",
+                "description": "Secondary Color"
+              },
+              "warning_color": {
+                "color": "#F4404E",
+                "type": "color",
+                "description": "Accent Color"
+              },
+              "bg_color": {
+                "color": "#EDEDED",
+                "type": "color",
+                "description": "Background Color"
+              },
+              "bg_alt_color": {
+                "color": "#ffffff",
+                "type": "color",
+                "description": "Alternative Background Color"
+              },
+              "text_color": {
+                "color": "#130C49",
+                "type": "color",
+                "description": "Text Color"
+              },
+              "text_alt_color": {
+                "color": "#8196A6",
+                "type": "color",
+                "description": "Alternative Text Color"
+              },
+              "button_color": {
+                "color": "#E6E3E3",
+                "type": "color",
+                "description": "Button Color"
+              },
+              "button_hover_color": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Button Hover Color"
+              },
+              "bg_console": {
+                "color": "#3F3E40",
+                "type": "color",
+                "description": "Console Background"
+              },
+              "text_console": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Console Text"
+              },
+              "font": {
+                "value": "Inter",
+                "type": "select",
+                "options": [
+                  "Inter",
+                  "Plus_Jakarta_Sans",
+                  "Open_Sans",
+                  "PT_Mono"
+                ],
+                "description": "Text Font"
+              },
+              "theme": "light"
+            }
+          },
+          "Chat": {
+            "title": "Chat Settings",
+            "description": "Customize chat settings like caching generated answers in Weaviate or let Weaviate give you autocomplete suggestions.",
+            "settings": {
+              "caching": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Caching"
+              },
+              "suggestion": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Autocompletion"
+              },
+              "info_button": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Help Information"
+              },
+              "max_document_size": {
+                "value": 10000,
+                "type": "number",
+                "description": "Max characters to show Documents"
+              }
+            }
+          }
+        },
+        "SanaMaxima": {
+          "Customization": {
+            "title": "Customization",
+            "description": "Customize the layout of your Verba by changing the title, subtitle, logo, and colors of the app.",
+            "settings": {
+              "title": {
+                "text": "Prinses Maxima Centrum",
+                "type": "text",
+                "description": "Title of the Page"
+              },
+              "subtitle": {
+                "text": "Medical RAG",
+                "type": "text",
+                "description": "Subtitle of the Page"
+              },
+              "intro_message": {
+                "text": "Welcome to Medical Retrieval Augmented Generation! We ingested medical data, like clinical reports, research and more to improve access to healthcare. Try it out by asking questions related to diseases, symptoms and medical conditions.",
+                "type": "text",
+                "description": "Intro Message"
+              },
+              "placeholder_message": {
+                "text": "Ask a medical question",
+                "type": "text",
+                "description": "Input Placeholder"
+              },
+              "image": {
+                "src": "https://www.prinsesmaximacentrum.nl/img/logo/prinses-maxima-centrum-logo-en.svg",
+                "type": "image",
+                "description": "Logo of the Page"
+              },
+              "primary_color": {
+                "color": "#FF963F",
+                "type": "color",
+                "description": "Primary Color"
+              },
+              "secondary_color": {
+                "color": "#53E797",
+                "type": "color",
+                "description": "Secondary Color"
+              },
+              "warning_color": {
+                "color": "#F11F78",
+                "type": "color",
+                "description": "Accent Color"
+              },
+              "bg_color": {
+                "color": "#F1F1F1",
+                "type": "color",
+                "description": "Background Color"
+              },
+              "bg_alt_color": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Alternative Background Color"
+              },
+              "text_color": {
+                "color": "#000F1D",
+                "type": "color",
+                "description": "Text Color"
+              },
+              "text_alt_color": {
+                "color": "#818181",
+                "type": "color",
+                "description": "Alternative Text Color"
+              },
+              "button_color": {
+                "color": "#E4E4E4",
+                "type": "color",
+                "description": "Button Color"
+              },
+              "button_hover_color": {
+                "color": "#CCCCCC",
+                "type": "color",
+                "description": "Button Hover Color"
+              },
+              "bg_console": {
+                "color": "#3F3E40",
+                "type": "color",
+                "description": "Console Background"
+              },
+              "text_console": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Console Text"
+              },
+              "font": {
+                "value": "Open_Sans",
+                "type": "select",
+                "options": [
+                  "Inter",
+                  "Plus_Jakarta_Sans",
+                  "Open_Sans",
+                  "PT_Mono"
+                ],
+                "description": "Text Font"
+              },
+              "theme": "light"
+            }
+          },
+          "Chat": {
+            "title": "Chat Settings",
+            "description": "Customize chat settings like caching generated answers in Weaviate or let Weaviate give you autocomplete suggestions.",
+            "settings": {
+              "caching": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Caching"
+              },
+              "suggestion": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Autocompletion"
+              },
+              "info_button": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Help Information"
+              },
+              "max_document_size": {
+                "value": 10000,
+                "type": "number",
+                "description": "Max characters to show Documents"
+              }
+            }
+          }
+        },
+        "Custom": {
+          "Customization": {
+            "title": "Customization",
+            "description": "Customize the layout of your Verba by changing the title, subtitle, logo, and colors of the app.",
+            "settings": {
+              "title": {
+                "text": "My RAG",
+                "type": "text",
+                "description": "Title of the Page"
+              },
+              "subtitle": {
+                "text": "Powered by Weaviate",
+                "type": "text",
+                "description": "Subtitle of the Page"
+              },
+              "intro_message": {
+                "text": "Welcome to Verba, your open-source RAG application!",
+                "type": "text",
+                "description": "Intro Message"
+              },
+              "placeholder_message": {
+                "text": "Ask Verba anything!",
+                "type": "text",
+                "description": "Input Placeholder"
+              },
+              "image": {
+                "src": "https://github.com/weaviate/Verba/blob/main/img/verba_icon.png?raw=true",
+                "type": "image",
+                "description": "Logo of the Page"
+              },
+              "primary_color": {
+                "color": "#FDFF91",
+                "type": "color",
+                "description": "Primary Color"
+              },
+              "secondary_color": {
+                "color": "#90FFA8",
+                "type": "color",
+                "description": "Secondary Color"
+              },
+              "warning_color": {
+                "color": "#FF8399",
+                "type": "color",
+                "description": "Accent Color"
+              },
+              "bg_color": {
+                "color": "#FEF7F7",
+                "type": "color",
+                "description": "Background Color"
+              },
+              "bg_alt_color": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Alternative Background Color"
+              },
+              "text_color": {
+                "color": "#161616",
+                "type": "color",
+                "description": "Text Color"
+              },
+              "text_alt_color": {
+                "color": "#8E8E8E",
+                "type": "color",
+                "description": "Alternative Text Color"
+              },
+              "button_color": {
+                "color": "#EFEFEF",
+                "type": "color",
+                "description": "Button Color"
+              },
+              "button_hover_color": {
+                "color": "#DCDCDC",
+                "type": "color",
+                "description": "Button Hover Color"
+              },
+              "bg_console": {
+                "color": "#3F3E40",
+                "type": "color",
+                "description": "Console Background"
+              },
+              "text_console": {
+                "color": "#FFFFFF",
+                "type": "color",
+                "description": "Console Text"
+              },
+              "font": {
+                "value": "Plus_Jakarta_Sans",
+                "type": "select",
+                "options": [
+                  "Inter",
+                  "Plus_Jakarta_Sans",
+                  "Open_Sans",
+                  "PT_Mono"
+                ],
+                "description": "Text Font"
+              },
+              "theme": "light"
+            }
+          },
+          "Chat": {
+            "title": "Chat Settings",
+            "description": "Customize chat settings like caching generated answers in Weaviate or let Weaviate give you autocomplete suggestions.",
+            "settings": {
+              "caching": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Caching"
+              },
+              "suggestion": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Autocompletion"
+              },
+              "info_button": {
+                "checked": true,
+                "type": "check",
+                "description": "Enable Help Information"
+              },
+              "max_document_size": {
+                "value": 10000,
+                "type": "number",
+                "description": "Max characters to show Documents"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "data": [
+    {
+      "filename": "filename.md",
+      "extension": "md",
+      "content": "Base64 encoded file contents."
+    }
+  ],
+  "textValues": []
+}
