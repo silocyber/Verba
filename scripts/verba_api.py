@@ -12,9 +12,12 @@ import websockets
 BASE_URL = "http://192.168.2.79:8000"
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', handlers=[
+    logging.FileHandler("verbaAPI.log"),
+    logging.StreamHandler()
+])
 
-STATE_FILE = 'import_state.json'
+STATE_FILE = 'state.json'
 
 def load_state():
     if os.path.exists(STATE_FILE):
@@ -53,7 +56,7 @@ def retrieve_config():
         return {}
 
 async def websocket_generate_stream(query, context, conversation):
-    uri = f"ws://localhost:8000/ws/generate_stream"
+    uri = f"ws://192.168.2.79:8000/ws/generate_stream"
     async with websockets.connect(uri) as websocket:
         payload = json.dumps({
             "query": query,
@@ -85,12 +88,24 @@ def get_md_files(directories_file):
                         md_files.append(os.path.join(root, file))
     return md_files
 
+def get_json_files(directories_file):
+    json_files = []
+    with open(directories_file, 'r') as file:
+        directories = file.readlines()
+        for directory in directories:
+            directory = directory.strip()
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    if file.endswith(".json") and file != "config.json":
+                        json_files.append(os.path.join(root, file))
+    return json_files
+
 def base64_encode_file(file_path):
     with open(file_path, 'rb') as file:
         encoded_content = base64.b64encode(file.read()).decode('utf-8')
     return encoded_content
 
-def generate_payload(md_files, state):
+def generate_payload(md_files, json_files, state):
     data = []
     for file in md_files:
         if state.get(file) == "success":
@@ -101,6 +116,17 @@ def generate_payload(md_files, state):
             "filename": os.path.basename(file),
             "extension": "md",
             "content": encoded_content
+        })
+    for file in json_files:
+        if state.get(file) == "success":
+            logging.info(f"Skipping already imported json file: {file}")
+            continue
+        with open(file, 'r') as json_file:
+            content = json.load(json_file)
+        data.append({
+            "filename": os.path.basename(file),
+            "extension": "json",
+            "content": content
         })
     return data
 
@@ -114,7 +140,8 @@ def import_data(directories_file, text_values, interval=60):
     while True:
         try:
             md_files = get_md_files(directories_file)
-            data = generate_payload(md_files, state)
+            json_files = get_json_files(directories_file)
+            data = generate_payload(md_files, json_files, state)
 
             if not data:
                 logging.info("No new files to import.")
@@ -122,7 +149,6 @@ def import_data(directories_file, text_values, interval=60):
                 payload = {
                     "config": config,
                     "data": data,
-                    #"textValues": json.loads(text_values)
                     "textValues": []
                 }
                 response = requests.post(f"{BASE_URL}/api/import", json=payload)
