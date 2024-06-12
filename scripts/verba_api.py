@@ -46,6 +46,7 @@ def get_status():
     print(json.dumps(response.json(), indent=4))
 
 def retrieve_config():
+    logging.info("Retrieving config...")
     response = requests.get(f"{BASE_URL}/api/config")
     if response.status_code == 200:
         config = response.json().get("data", {})
@@ -77,6 +78,7 @@ def reset_verba(reset_mode):
     print(json.dumps(response.json(), indent=4))
 
 def get_md_files(directories_file):
+    logging.info("Retrieving Markdown files...")
     md_files = []
     with open(directories_file, 'r') as file:
         directories = file.readlines()
@@ -89,6 +91,7 @@ def get_md_files(directories_file):
     return md_files
 
 def get_json_files(directories_file):
+    logging.info("Retrieving JSON files...")
     json_files = []
     with open(directories_file, 'r') as file:
         directories = file.readlines()
@@ -101,11 +104,13 @@ def get_json_files(directories_file):
     return json_files
 
 def base64_encode_file(file_path):
+    logging.info(f"Encoding file: {file_path}")
     with open(file_path, 'rb') as file:
         encoded_content = base64.b64encode(file.read()).decode('utf-8')
     return encoded_content
 
 def generate_payload(md_files, json_files, state):
+    logging.info("Generating payload...")
     data = []
     for file in md_files:
         if state.get(file) == "success":
@@ -131,6 +136,7 @@ def generate_payload(md_files, json_files, state):
     return data
 
 def import_data(directories_file, text_values, interval=60):
+    logging.info("Importing data...")
     state = load_state()
     config = retrieve_config()
     if not config:
